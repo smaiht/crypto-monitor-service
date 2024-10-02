@@ -3,6 +3,7 @@
 
 This is part of a real-time cryptocurrency data monitoring system. It collects data from a specified cryptocurrency exchange, processes it, sends it to the hub, and stores it in a TimescaleDB database.
 
+https://github.com/user-attachments/assets/5253130c-c8ba-4171-9c9b-7f0cf0167199
 
 ## IMPORTANT NOTICE
 
