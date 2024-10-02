@@ -1,4 +1,5 @@
-# Cryptocurrency Data Monitoring Service (PHP, CCXT, TimescaleDB, Redis)
+# Cryptocurrency Data Monitoring Service
+- PHP, CCXT, TimescaleDB (pgsql), Redis (pub/sub)
 
 This is part of a real-time cryptocurrency data monitoring system. It collects data from a specified cryptocurrency exchange, processes it, sends it to the hub, and stores it in a TimescaleDB database.
 
