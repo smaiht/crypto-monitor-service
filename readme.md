@@ -3,6 +3,7 @@
 
 This is part of a real-time cryptocurrency data monitoring system. It collects data from a specified cryptocurrency exchange, processes it, sends it to the hub, and stores it in a TimescaleDB database.
 
+
 ## IMPORTANT NOTICE
 
 **This is only a part of the system and will not work without the installed and running repository: [https://github.com/smaiht/crypto-monitor-hub](https://github.com/smaiht/crypto-monitor-hub)**
@@ -12,20 +13,32 @@ This is part of a real-time cryptocurrency data monitoring system. It collects d
 
 ## System Architecture Overview
 
-1. Scalable Design:
-   Each exchange can be monitored on a separate machine with its own database. The main hub can query all machines for specific data.
+1. Central Hub:
+   - Laravel application with Filament admin panel.
+   - Receives data from all monitoring services via Redis pub/sub.
+   - Provides real-time monitoring of trading pairs for all exchanges (or a specific one) via WebSockets in the browser.
+   - API for querying prices by pair/exchange/time (can query all machines for specific data)
 
-2. Efficient Data Storage:
-   Using TimescaleDB with materialized views for each exchange:
-   - `ticker_data`: Contains records for all pairs for each second. Data is collected over a configurable interval (configurable to 5 seconds via .env) before being inserted. Kept for 24 hours.
-   - Materialized views use continuous aggregators to populate corresponding tables:
-     - `ticker_data_1m`: 1-minute aggregated data, stored for up to 7 days.
-     - `ticker_data_1h`: 1-hour aggregated data, stored indefinitely.
+2. Monitoring Services (one per exchange):
+   - Can be deployed on separate servers with their own databases.
+   - Consists of two components:
+     a) Monitor: Uses CCXT to subscribe to exchange tickers and publish data to Redis.
+     b) Aggregator: Listens to the corresponding Redis channel, analyzes, and writes data to the database.
 
-3. Performance Optimization:
-   - Composite indexes on trading pairs and time.
-   - Table partitioning by trading pairs and time.
+3. Data Storage in TimescaleDB for optimized time-series data handling:
+   a) Main table `ticker_data`:
+      - Contains records for all pairs with second precision.
+      - Data insertion occurs in batches with a configurable interval (default 5 seconds).
+      - Data is kept for 24 hours.
+   b) Materialized views with continuous aggregators:
+      - `ticker_data_1m`: 1-minute aggregation, stored for 7 days.
+      - `ticker_data_1h`: 1-hour aggregation, stored indefinitely.
+   c) Composite indexes on trading pairs and time.
+   d) Table partitioning by trading pairs and time.
 
+4. Containerization and Scalability:
+   - The system is fully dockerized, ensuring quick deployment and scaling.
+   - Easy addition of new monitoring services for additional exchanges.
 Note: Estimated database size for 1 exchange after 1 year: ~1 GB.
 
 
