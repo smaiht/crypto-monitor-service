@@ -1,0 +1,34 @@
+FROM php:8.3-cli
+
+RUN apt-get update && apt-get install -y \
+    git \
+    curl \
+    libpq-dev \
+    zip \
+    unzip \
+    libzip-dev \
+    libicu-dev \
+    libgmp-dev \
+    libssl-dev \
+    libevent-dev \
+    libev-dev \
+    && docker-php-ext-install pdo pdo_pgsql zip bcmath intl gmp pcntl sockets
+
+RUN pecl install redis && docker-php-ext-enable redis
+
+RUN apt-get install -y ca-certificates && update-ca-certificates
+RUN apt-get install -y openssl
+
+RUN echo "memory_limit = 256M" > /usr/local/etc/php/conf.d/memory-limit.ini
+
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+WORKDIR /var/www/html
+
+COPY . .
+RUN composer install
+
+# RUN chown -R www-data:www-data /var/www/html \
+#     && chmod -R 755 /var/www/html
+
+CMD ["php", "bin/monitor.php", "start"]

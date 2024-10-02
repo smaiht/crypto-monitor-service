@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  timescaledb:
+    image: timescale/timescaledb-ha:pg16
+    environment:
+      - POSTGRES_PASSWORD=12121212
+    volumes:
+      - timescaledb_data:/home/postgres/pgdata/data
+      - ./init-databases.sql:/docker-entrypoint-initdb.d/init-databases.sql
+    ports:
+      - "5433:5432"
+    networks:
+      - shared-services-network
+
+volumes:
+  timescaledb_data:
+
+networks:
+  shared-services-network:
+    external: true
