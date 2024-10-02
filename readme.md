@@ -2,6 +2,12 @@
 
 This is part of a real-time cryptocurrency data monitoring system. It collects data from a specified cryptocurrency exchange, processes it, sends it to the hub, and stores it in a TimescaleDB database.
 
+## IMPORTANT NOTICE
+
+**This is only a part of the system and will not work without the installed and running repository: [https://github.com/smaiht/crypto-monitor-hub](https://github.com/smaiht/crypto-monitor-hub)**
+
+**Please install and set up the crypto-monitor-hub first before proceeding with the installation here.**
+
 
 ## Installation
 
@@ -36,13 +42,35 @@ docker-compose up --build
 
 ### Local Installation
 
-1. Install dependencies:
+1. Install necessary system packages and PHP extensions:
+~~~
+sudo apt-get update && sudo apt-get install -y 
+libpq-dev 
+libzip-dev 
+libicu-dev 
+libgmp-dev 
+libssl-dev 
+libevent-dev 
+libev-dev 
+php-pdo 
+php-pgsql 
+php-zip 
+php-bcmath 
+php-intl 
+php-gmp 
+php-pcntl 
+php-sockets
+sudo pecl install redis
+sudo phpenmod redis
+~~~
+
+2. Install project dependencies:
 ~~~
 composer install
 ~~~
-2. Configure the `.env` file with appropriate settings.
+3. Configure the `.env` file with appropriate settings.
 
-3. Start the monitor and aggregator in separate terminals:
+4. Start the monitor and aggregator in separate terminals:
 ~~~
 php bin/monitor.php start
 ~~~
